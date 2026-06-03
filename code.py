@@ -526,7 +526,7 @@ def prediction_loop(model, encoders):
 
             break
 
-
+# Main
 def main():
 
     df = load_data(DATASET_PATH)
