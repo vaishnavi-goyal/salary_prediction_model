@@ -1,14 +1,18 @@
 import streamlit as st
 import pandas as pd
 import joblib
-import io
-
+import plotly.graph_objects as go
+import plotly.express as px
+from datetime import datetime
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet
+import tempfile
 # ==========================================================
 # PAGE CONFIG
 # ==========================================================
 
 st.set_page_config(
-    page_title="💼 Job Salary Prediction",
+    page_title="💼 AI Salary Prediction Dashboard",
     page_icon="💼",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -18,8 +22,20 @@ st.set_page_config(
 # LOAD MODEL
 # ==========================================================
 
-model = joblib.load("salary_model.pkl")
-encoders = joblib.load("encoders.pkl")
+@st.cache_resource
+def load_model():
+    model = joblib.load("salary_model.pkl")
+    encoders = joblib.load("encoders.pkl")
+    return model, encoders
+
+model, encoders = load_model()
+
+# ==========================================================
+# SESSION STATE
+# ==========================================================
+
+if "history" not in st.session_state:
+    st.session_state.history = []
 
 # ==========================================================
 # CUSTOM CSS
@@ -28,20 +44,21 @@ encoders = joblib.load("encoders.pkl")
 st.markdown("""
 <style>
 
-/* Google Font */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
 html,body,[class*="css"]{
-    font-family:'Poppins',sans-serif;
+font-family:'Poppins',sans-serif;
 }
 
-/* Hide Streamlit Header */
+/* Background */
+
+.stApp{
+background:linear-gradient(135deg,#eef5ff,#f8fbff,#e6f0ff);
+}
+
+/* Hide Streamlit */
 
 #MainMenu{
-visibility:hidden;
-}
-
-header{
 visibility:hidden;
 }
 
@@ -49,38 +66,21 @@ footer{
 visibility:hidden;
 }
 
-/* Background */
-
-.stApp{
-background:linear-gradient(
-135deg,
-#EEF4FF,
-#F8FBFF,
-#E8F1FF
-);
+header{
+visibility:hidden;
 }
 
-/* Main Container */
+/* Card */
 
-.block-container{
-
-padding-top:30px;
-
-padding-bottom:30px;
-
-}
-
-/* Dashboard Card */
-
-.dashboard{
+.card{
 
 background:white;
 
-padding:35px;
+padding:30px;
 
-border-radius:25px;
+border-radius:20px;
 
-box-shadow:0px 20px 45px rgba(0,0,0,.12);
+box-shadow:0px 15px 40px rgba(0,0,0,.10);
 
 }
 
@@ -92,11 +92,9 @@ font-size:48px;
 
 font-weight:700;
 
+color:#1d4ed8;
+
 text-align:center;
-
-color:#1E3A8A;
-
-margin-bottom:8px;
 
 }
 
@@ -104,55 +102,13 @@ margin-bottom:8px;
 
 .subtitle{
 
-font-size:18px;
-
 text-align:center;
 
-color:#64748B;
+font-size:18px;
+
+color:#64748b;
 
 margin-bottom:30px;
-
-}
-
-/* Widget Labels */
-
-div[data-testid="stWidgetLabel"] p{
-
-font-size:16px;
-
-font-weight:600;
-
-color:#1F2937 !important;
-
-}
-
-/* Select Box */
-
-div[data-baseweb="select"]{
-
-border-radius:12px;
-
-}
-
-div[data-baseweb="select"] > div{
-
-background:#F8FAFC;
-
-border:2px solid #CBD5E1;
-
-border-radius:12px;
-
-}
-
-/* Number Input */
-
-.stNumberInput input{
-
-background:#F8FAFC;
-
-border-radius:12px;
-
-border:2px solid #CBD5E1;
 
 }
 
@@ -162,23 +118,19 @@ border:2px solid #CBD5E1;
 
 width:100%;
 
-height:58px;
+height:60px;
 
 border:none;
 
-border-radius:14px;
+border-radius:15px;
 
 background:linear-gradient(90deg,#2563EB,#4F46E5);
 
 color:white;
 
-font-size:19px;
+font-size:20px;
 
 font-weight:bold;
-
-box-shadow:0px 10px 25px rgba(37,99,235,.35);
-
-transition:.3s;
 
 }
 
@@ -186,73 +138,72 @@ transition:.3s;
 
 transform:translateY(-3px);
 
+transition:.3s;
+
+}
+
+/* Labels */
+
+div[data-testid="stWidgetLabel"] p{
+
+font-size:16px;
+
+font-weight:600;
+
+color:#1f2937;
+
 }
 
 </style>
 """, unsafe_allow_html=True)
+
 # ==========================================================
 # SIDEBAR
 # ==========================================================
 
 with st.sidebar:
 
-    st.markdown("## 🤖 AI Salary Predictor")
+    st.title("🤖 AI Salary Predictor")
 
-    st.write(
-        """
-Welcome 👋
-
-Predict employee salary using Machine Learning.
-
-### Features
-
-✅ Gradient Boosting Model
-
-✅ Instant Prediction
-
-✅ Multiple Countries
-
-✅ Currency Conversion
-
-✅ Download Report
-"""
-    )
+    st.write("Professional Machine Learning Dashboard")
 
     st.markdown("---")
 
-    st.info(
-        """
-Developer
+    dark = st.toggle("🌙 Dark Mode")
 
-👩‍💻 Vaishnavi Goyal
+    st.markdown("---")
 
-Machine Learning Project
-"""
-    )
+    st.success("Model Loaded Successfully ✅")
 
-# ==========================================================
-# HEADER
+    st.caption("Version 2.0")
+    # ==========================================================
+# HERO SECTION
 # ==========================================================
 
 st.markdown("""
-<div class="dashboard">
+
+<div class="card">
 
 <div class="title">
 
-💼 Job Salary Prediction Dashboard
+💼 AI Salary Prediction Dashboard
 
 </div>
 
 <div class="subtitle">
 
-AI Powered Salary Prediction using Machine Learning
+Predict employee salary using Machine Learning and AI Analytics
+
+</div>
 
 </div>
 
 """, unsafe_allow_html=True)
 
+st.write("")
+
 # ==========================================================
-# INPUT FORM
+# INPUT SECTION
 # ==========================================================
 
 left, right = st.columns(2)
@@ -291,110 +242,164 @@ with right:
         encoders["remote_work"].classes_
     )
 
-    experience = st.number_input(
+    experience = st.slider(
         "📈 Years of Experience",
         min_value=0,
         max_value=40,
-        value=1
+        value=2
     )
 
-    skills = st.number_input(
+    skills = st.slider(
         "🛠 Skills Count",
         min_value=1,
         max_value=20,
         value=5
     )
 
-    certifications = st.number_input(
+    certifications = st.slider(
         "📜 Certifications",
         min_value=0,
-        max_value=5,
-        value=0
+        max_value=10,
+        value=1
     )
 
 st.write("")
 
-predict = st.button("🚀 Predict Salary")
+# ==========================================================
+# QUICK PREVIEW
+# ==========================================================
 
-st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("### 👀 Selected Profile")
+
+c1, c2, c3 = st.columns(3)
+
+with c1:
+    st.metric("Experience", f"{experience} Years")
+
+with c2:
+    st.metric("Skills", skills)
+
+with c3:
+    st.metric("Certificates", certifications)
+
+st.info(
+    f"""
+**Selected Profile**
+
+💼 {job_title}
+
+🎓 {education}
+
+🏢 {industry}
+
+📍 {location}
+"""
+)
+
+st.write("")
+
+# ==========================================================
+# PREDICT BUTTON
+# ==========================================================
+
+predict = st.button(
+    "🚀 Predict Salary"
+)
 # ==========================================================
 # PREDICTION
 # ==========================================================
 
 if predict:
 
-    # Prepare Input Data
-    input_data = pd.DataFrame([{
+    with st.spinner("🤖 AI is analyzing your profile..."):
 
-        "job_title":
-        encoders["job_title"].transform([job_title])[0],
+        input_data = pd.DataFrame([{
 
-        "experience_years":
-        experience,
+            "job_title":
+            encoders["job_title"].transform([job_title])[0],
 
-        "education_level":
-        encoders["education_level"].transform([education])[0],
+            "experience_years":
+            experience,
 
-        "skills_count":
-        skills,
+            "education_level":
+            encoders["education_level"].transform([education])[0],
 
-        "industry":
-        encoders["industry"].transform([industry])[0],
+            "skills_count":
+            skills,
 
-        "company_size":
-        encoders["company_size"].transform([company_size])[0],
+            "industry":
+            encoders["industry"].transform([industry])[0],
 
-        "location":
-        encoders["location"].transform([location])[0],
+            "company_size":
+            encoders["company_size"].transform([company_size])[0],
 
-        "remote_work":
-        encoders["remote_work"].transform([remote_work])[0],
+            "location":
+            encoders["location"].transform([location])[0],
 
-        "certifications":
-        certifications
+            "remote_work":
+            encoders["remote_work"].transform([remote_work])[0],
 
-    }])
+            "certifications":
+            certifications
 
-    # Salary Prediction
-    salary = model.predict(input_data)[0]
+        }])
 
-    # Currency Conversion
+        salary = model.predict(input_data)[0]
 
-    currency_rates = {
+    # ==========================================================
+    # CURRENCY CONVERSION
+    # ==========================================================
 
-        "USA": ("USD",1),
-
+    currency = {
+        "USA":("USD",1),
         "India":("INR",83),
-
         "UK":("GBP",0.79),
-
         "Canada":("CAD",1.36),
-
         "Germany":("EUR",0.92),
-
         "Australia":("AUD",1.52),
-
         "Singapore":("SGD",1.35),
-
         "UAE":("AED",3.67)
-
     }
 
-    currency_code="USD"
+    code = "USD"
+    rate = 1
 
-    rate=1
+    if location in currency:
+        code, rate = currency[location]
 
-    if location in currency_rates:
+    converted_salary = salary * rate
 
-        currency_code,rate=currency_rates[location]
+    # ==========================================================
+    # SALARY RATING
+    # ==========================================================
 
-    converted_salary=salary*rate
+    if salary < 50000:
 
-    lower=max(0,salary-4255)
+        rating = "⭐⭐"
 
-    upper=salary+4255
+        level = "Entry Level"
 
-    # Beautiful Salary Card
+    elif salary < 100000:
+
+        rating = "⭐⭐⭐"
+
+        level = "Mid Level"
+
+    elif salary < 180000:
+
+        rating = "⭐⭐⭐⭐"
+
+        level = "Senior"
+
+    else:
+
+        rating = "⭐⭐⭐⭐⭐"
+
+        level = "Executive"
+
+    # ==========================================================
+    # SALARY CARD
+    # ==========================================================
 
     st.markdown(f"""
 
@@ -402,7 +407,7 @@ if predict:
 
     background:linear-gradient(135deg,#2563EB,#4F46E5);
 
-    border-radius:20px;
+    border-radius:25px;
 
     padding:35px;
 
@@ -410,200 +415,340 @@ if predict:
 
     text-align:center;
 
-    margin-top:25px;
-
-    box-shadow:0 15px 35px rgba(0,0,0,.18);
+    box-shadow:0 15px 40px rgba(0,0,0,.20);
 
     ">
 
     <h2>💰 Predicted Salary</h2>
 
-    <h1 style="font-size:52px;">
+    <h1 style="font-size:55px;">
 
     ${salary:,.0f}
 
     </h1>
 
-    <h3>{currency_code} {converted_salary:,.0f}</h3>
+    <h3>{code} {converted_salary:,.0f}</h3>
+
+    <h3>{rating}</h3>
+
+    <p>{level}</p>
 
     </div>
 
-    """,unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
     st.write("")
         # ==========================================================
-    # PROFILE SUMMARY & PREDICTION DETAILS
+    # PROFILE SUMMARY
     # ==========================================================
 
-    col1, col2 = st.columns(2)
+    left_card, right_card = st.columns(2)
 
-    with col1:
+    with left_card:
 
-        st.markdown("## 👤 Candidate Summary")
+        st.markdown("## 👤 Candidate Profile")
 
         st.info(f"""
+**💼 Job Title:** {job_title}
 
-**💼 Job Title :** {job_title}
+**🎓 Education:** {education}
 
-**🎓 Education :** {education}
+**🏢 Industry:** {industry}
 
-**🏢 Industry :** {industry}
+**🏬 Company Size:** {company_size}
 
-**🏬 Company Size :** {company_size}
+**📍 Location:** {location}
 
-**📍 Location :** {location}
+**🏠 Remote Work:** {remote_work}
 
-**🏠 Remote Work :** {remote_work}
-
+**📜 Certifications:** {certifications}
 """)
 
-    with col2:
+    # ==========================================================
+    # EXPERIENCE LEVEL
+    # ==========================================================
 
-        # Experience Level
+    if experience <= 2:
+        exp_level = "🟢 Fresher"
 
-        if experience <= 2:
-            level = "🟢 Fresher"
+    elif experience <= 5:
+        exp_level = "🟡 Junior"
 
-        elif experience <= 5:
-            level = "🟡 Junior"
+    elif experience <= 10:
+        exp_level = "🟠 Mid Level"
 
-        elif experience <= 10:
-            level = "🟠 Mid Level"
+    else:
+        exp_level = "🔴 Senior"
 
-        else:
-            level = "🔴 Senior"
+    confidence = 94
 
-        confidence = 94
+    with right_card:
 
         st.markdown("## 📊 Prediction Details")
 
         st.success(f"""
-
-⭐ Experience Level : {level}
+⭐ Experience Level : {exp_level}
 
 📈 Confidence : {confidence}%
 
-💵 Currency : {currency_code}
+💵 Currency : {code}
 
-📉 Salary Range
+📍 Location : {location}
 
-${lower:,.0f}
-
-to
-
-${upper:,.0f}
-
+🎯 Salary Rating : {rating}
 """)
-
-    st.write("")
 
     # ==========================================================
     # CONFIDENCE BAR
     # ==========================================================
 
+    st.write("")
+
     st.markdown("### 📈 Prediction Confidence")
 
     st.progress(confidence)
 
-    st.write("")
+    st.caption(f"AI Confidence Score : {confidence}%")
 
     # ==========================================================
     # QUICK METRICS
     # ==========================================================
 
-    c1, c2, c3 = st.columns(3)
+    m1, m2, m3, m4 = st.columns(4)
 
-    with c1:
-
+    with m1:
         st.metric(
             "💰 Salary",
             f"${salary:,.0f}"
         )
 
-    with c2:
-
+    with m2:
         st.metric(
             "📈 Experience",
             f"{experience} Years"
         )
 
-    with c3:
-
+    with m3:
         st.metric(
             "🛠 Skills",
             skills
         )
 
+    with m4:
+        st.metric(
+            "📜 Certificates",
+            certifications
+        )
+
     st.write("")
         # ==========================================================
-    # SALARY CATEGORY
+    # ANALYTICS DASHBOARD
     # ==========================================================
 
-    st.write("")
+    st.markdown("---")
+    st.markdown("## 📊 Salary Analytics Dashboard")
 
-    if salary < 50000:
+    # -----------------------
+    # Gauge Meter
+    # -----------------------
 
-        st.warning("💡 Salary Category : Entry Level")
+    gauge = go.Figure(go.Indicator(
 
-    elif salary < 120000:
+        mode="gauge+number",
 
-        st.info("💡 Salary Category : Mid Level")
+        value=salary,
+
+        title={"text":"Predicted Salary"},
+
+        number={"prefix":"$"},
+
+        gauge={
+
+            "axis":{"range":[0,250000]},
+
+            "bar":{"color":"royalblue"},
+
+            "steps":[
+
+                {"range":[0,50000],"color":"#dcfce7"},
+
+                {"range":[50000,120000],"color":"#fef9c3"},
+
+                {"range":[120000,250000],"color":"#fee2e2"}
+
+            ]
+
+        }
+
+    ))
+
+    st.plotly_chart(
+        gauge,
+        use_container_width=True
+    )
+
+    # -----------------------
+    # Salary Comparison
+    # -----------------------
+
+    chart = pd.DataFrame({
+
+        "Type":[
+
+            "Lower",
+
+            "Predicted",
+
+            "Upper"
+
+        ],
+
+        "Salary":[
+
+            max(0,salary-5000),
+
+            salary,
+
+            salary+5000
+
+        ]
+
+    })
+
+    fig = px.bar(
+
+        chart,
+
+        x="Type",
+
+        y="Salary",
+
+        text="Salary",
+
+        color="Type"
+
+    )
+
+    fig.update_traces(
+
+        texttemplate="$%{text:,.0f}",
+
+        textposition="outside"
+
+    )
+
+    fig.update_layout(
+
+        height=420,
+
+        showlegend=False
+
+    )
+
+    st.plotly_chart(
+        fig,
+        use_container_width=True
+    )
+
+    # ==========================================================
+    # AI RECOMMENDATION
+    # ==========================================================
+
+    st.markdown("## 🤖 AI Recommendation")
+
+    if experience < 2:
+
+        st.warning("""
+
+🚀 You are at the beginning of your career.
+
+Recommended Skills
+
+• Python
+
+• SQL
+
+• Excel
+
+• Power BI
+
+""")
+
+    elif experience < 5:
+
+        st.info("""
+
+📈 You are progressing well.
+
+Recommended Skills
+
+• Machine Learning
+
+• Deep Learning
+
+• Cloud Computing
+
+• Docker
+
+""")
 
     else:
 
-        st.success("💡 Salary Category : High Income")
+        st.success("""
 
+🏆 You have strong experience.
+
+Recommended Skills
+
+• Leadership
+
+• MLOps
+
+• Generative AI
+
+• System Design
+
+""")
     # ==========================================================
     # DOWNLOAD REPORT
     # ==========================================================
+
+    st.markdown("---")
+    st.markdown("## 📄 Download Prediction Report")
 
     report = pd.DataFrame({
 
         "Field":[
 
             "Job Title",
-
             "Education",
-
             "Industry",
-
             "Company Size",
-
             "Location",
-
             "Remote Work",
-
             "Experience",
-
             "Skills",
-
             "Certifications",
-
-            "Predicted Salary"
+            "Predicted Salary (USD)",
+            "Converted Salary",
+            "Experience Level"
 
         ],
 
         "Value":[
 
             job_title,
-
             education,
-
             industry,
-
             company_size,
-
             location,
-
             remote_work,
-
             experience,
-
             skills,
-
             certifications,
-
-            f"${salary:,.0f}"
+            f"${salary:,.0f}",
+            f"{code} {converted_salary:,.0f}",
+            exp_level
 
         ]
 
@@ -613,9 +758,9 @@ ${upper:,.0f}
 
     st.download_button(
 
-        "📥 Download Prediction Report",
+        "📥 Download CSV Report",
 
-        csv,
+        data=csv,
 
         file_name="salary_prediction_report.csv",
 
@@ -624,70 +769,524 @@ ${upper:,.0f}
     )
 
     # ==========================================================
-    # CAREER TIPS
+    # SAVE HISTORY
     # ==========================================================
 
-    st.write("")
+    st.session_state.history.append({
 
-    st.markdown("## 💡 Career Tips")
+        "Time":datetime.now().strftime("%d-%m-%Y %H:%M"),
 
-    tips = [
-        "🐍 Learn Python",
-        "🗄️ Master SQL",
-        "📊 Improve Data Analysis",
-        "🤖 Learn Machine Learning",
-        "📜 Complete Certifications",
-        "💼 Build Real Projects",
-        "🌐 Create Portfolio",
-        "🔗 Keep LinkedIn Updated"
-    ]
+        "Job":job_title,
 
-    for tip in tips:
+        "Salary":salary,
 
-        st.write("✅", tip)
+        "Location":location
+
+    })
 
     # ==========================================================
-    # SUCCESS ANIMATION
+    # HISTORY
+    # ==========================================================
+
+    st.markdown("---")
+    st.markdown("## 🕒 Prediction History")
+
+    history = pd.DataFrame(st.session_state.history)
+
+    st.dataframe(
+
+        history,
+
+        use_container_width=True,
+
+        hide_index=True
+
+    )
+
+    # ==========================================================
+    # SUCCESS
     # ==========================================================
 
     st.balloons()
 
-# ==========================================================
-# FOOTER
-# ==========================================================
+    st.success("✅ Salary Prediction Completed Successfully")
 
-st.markdown("---")
+    # ==========================================================
+    # FOOTER
+    # ==========================================================
 
-st.markdown("""
+    st.markdown("---")
+
+    st.markdown("""
 
 <div style="
 
 text-align:center;
 
-padding:20px;
-
-color:#64748B;
+padding:25px;
 
 ">
 
-<h3 style="color:#2563EB;">
+<h2 style="color:#2563EB;">
 
-💼 Job Salary Prediction Dashboard
+💼 AI Salary Prediction Dashboard
 
-</h3>
+</h2>
 
 <p>
 
-Developed with ❤️ by <b>Vaishnavi Goyal</b>
+Built with ❤️ using
+
+<b>Python • Streamlit • Scikit-learn • Plotly</b>
 
 </p>
 
 <p>
 
-Machine Learning Project | Streamlit | Python | Scikit-learn
+Developed by <b>Vaishnavi Goyal</b>
 
 </p>
 
 </div>
 
 """, unsafe_allow_html=True)
+        # ==========================================================
+    # AI SALARY INSIGHTS
+    # ==========================================================
+
+    st.markdown("---")
+    st.markdown("## 🤖 AI Salary Insights")
+
+    if salary < 50000:
+
+        insight = """
+Your predicted salary is in the Entry-Level range.
+
+To improve your salary:
+
+✅ Learn Python
+
+✅ Learn SQL
+
+✅ Build Projects
+
+✅ Improve Communication Skills
+"""
+
+    elif salary < 100000:
+
+        insight = """
+You are earning a competitive salary.
+
+Recommended Next Steps:
+
+✅ Machine Learning
+
+✅ Power BI
+
+✅ Cloud Computing
+
+✅ Advanced SQL
+"""
+
+    else:
+
+        insight = """
+Excellent Salary Prediction 🎉
+
+To move towards senior positions:
+
+✅ Generative AI
+
+✅ MLOps
+
+✅ System Design
+
+✅ Leadership Skills
+"""
+
+    st.info(insight)
+
+    # ==========================================================
+    # SKILL SCORE
+    # ==========================================================
+
+    st.markdown("## 🏆 Skill Score")
+
+    score = min(
+        100,
+        experience * 5 +
+        skills * 3 +
+        certifications * 6
+    )
+
+    st.progress(score)
+
+    st.metric(
+        "Overall Skill Score",
+        f"{score}/100"
+    )
+
+    # ==========================================================
+    # NEXT CAREER GOAL
+    # ==========================================================
+
+    st.markdown("## 🎯 Suggested Next Role")
+
+    if score < 40:
+
+        st.warning("Junior Developer")
+
+    elif score < 70:
+
+        st.info("Machine Learning Engineer")
+
+    elif score < 90:
+
+        st.success("Senior ML Engineer")
+
+    else:
+
+        st.success("AI Architect")
+            # ==========================================================
+    # PDF REPORT
+    # ==========================================================
+
+    styles = getSampleStyleSheet()
+
+    temp = tempfile.NamedTemporaryFile(
+        delete=False,
+        suffix=".pdf"
+    )
+
+    doc = SimpleDocTemplate(temp.name)
+
+    story = []
+
+    story.append(
+        Paragraph(
+            "<b>AI Salary Prediction Report</b>",
+            styles["Title"]
+        )
+    )
+
+    story.append(
+        Paragraph(
+            f"Job Title : {job_title}",
+            styles["BodyText"]
+        )
+    )
+
+    story.append(
+        Paragraph(
+            f"Education : {education}",
+            styles["BodyText"]
+        )
+    )
+
+    story.append(
+        Paragraph(
+            f"Industry : {industry}",
+            styles["BodyText"]
+        )
+    )
+
+    story.append(
+        Paragraph(
+            f"Predicted Salary : ${salary:,.0f}",
+            styles["BodyText"]
+        )
+    )
+
+    story.append(
+        Paragraph(
+            f"Skill Score : {score}/100",
+            styles["BodyText"]
+        )
+    )
+
+    doc.build(story)
+
+    with open(temp.name, "rb") as pdf:
+
+        st.download_button(
+
+            "📄 Download PDF Report",
+
+            pdf,
+
+            file_name="Salary_Report.pdf",
+
+            mime="application/pdf"
+
+        )
+            # ==========================================================
+    # COUNTRY FLAG
+    # ==========================================================
+
+    flags = {
+        "India":"🇮🇳",
+        "USA":"🇺🇸",
+        "UK":"🇬🇧",
+        "Canada":"🇨🇦",
+        "Germany":"🇩🇪",
+        "Australia":"🇦🇺",
+        "Singapore":"🇸🇬",
+        "UAE":"🇦🇪"
+    }
+
+    flag = flags.get(location, "🌍")
+
+    st.markdown("---")
+    st.markdown("## 🌍 Country Information")
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+        st.metric(
+            "Country",
+            f"{flag} {location}"
+        )
+
+    with c2:
+        st.metric(
+            "Currency",
+            code
+        )
+
+    with c3:
+        st.metric(
+            "Prediction",
+            level
+        )
+
+    # ==========================================================
+    # PROFILE RATING
+    # ==========================================================
+
+    st.markdown("## ⭐ Profile Rating")
+
+    if score < 40:
+
+        stars = "⭐⭐"
+
+    elif score < 60:
+
+        stars = "⭐⭐⭐"
+
+    elif score < 80:
+
+        stars = "⭐⭐⭐⭐"
+
+    else:
+
+        stars = "⭐⭐⭐⭐⭐"
+
+    st.success(f"Overall Rating : {stars}")
+
+    # ==========================================================
+    # TOP SKILLS
+    # ==========================================================
+
+    st.markdown("## 🚀 Recommended Skills")
+
+    skills_df = pd.DataFrame({
+
+        "Skill":[
+
+            "Python",
+
+            "SQL",
+
+            "Machine Learning",
+
+            "Deep Learning",
+
+            "Power BI",
+
+            "Cloud"
+
+        ],
+
+        "Importance":[
+
+            95,
+
+            90,
+
+            100,
+
+            82,
+
+            70,
+
+            75
+
+        ]
+
+    })
+
+    chart = px.bar(
+
+        skills_df,
+
+        x="Importance",
+
+        y="Skill",
+
+        orientation="h",
+
+        color="Importance"
+
+    )
+
+    chart.update_layout(
+        height=400
+    )
+
+    st.plotly_chart(
+        chart,
+        use_container_width=True
+    )
+
+    # ==========================================================
+    # PREDICTION TIMELINE
+    # ==========================================================
+
+    st.markdown("## 📅 Career Growth Timeline")
+
+    timeline = pd.DataFrame({
+
+        "Year":[
+
+            "2026",
+
+            "2027",
+
+            "2028",
+
+            "2029",
+
+            "2030"
+
+        ],
+
+        "Career":[
+
+            "Intern",
+
+            "Junior ML",
+
+            "ML Engineer",
+
+            "Senior ML",
+
+            "AI Engineer"
+
+        ]
+
+    })
+
+    st.table(timeline)
+        # ==========================================================
+    # FINAL DASHBOARD SUMMARY
+    # ==========================================================
+
+    st.markdown("---")
+    st.markdown("## 🏆 Dashboard Summary")
+
+    d1, d2, d3, d4 = st.columns(4)
+
+    with d1:
+        st.metric(
+            "💼 Job",
+            job_title
+        )
+
+    with d2:
+        st.metric(
+            "🌍 Country",
+            location
+        )
+
+    with d3:
+        st.metric(
+            "⭐ Rating",
+            stars
+        )
+
+    with d4:
+        st.metric(
+            "📊 Score",
+            f"{score}/100"
+        )
+
+    # ==========================================================
+    # PROFILE COMPLETENESS
+    # ==========================================================
+
+    st.markdown("## 📋 Profile Completeness")
+
+    profile_score = 100
+
+    if certifications == 0:
+        profile_score -= 15
+
+    if skills < 5:
+        profile_score -= 20
+
+    if experience < 2:
+        profile_score -= 15
+
+    st.progress(profile_score)
+
+    st.write(f"Profile Score : **{profile_score}%**")
+
+    # ==========================================================
+    # FINAL RECOMMENDATION
+    # ==========================================================
+
+    st.markdown("## 🎯 Final Recommendation")
+
+    recommendations = []
+
+    if skills < 8:
+        recommendations.append("🛠 Improve technical skills.")
+
+    if certifications < 2:
+        recommendations.append("📜 Complete more certifications.")
+
+    if experience < 3:
+        recommendations.append("💼 Gain internship or project experience.")
+
+    if salary > 120000:
+        recommendations.append("🚀 You're ready for senior opportunities.")
+
+    if not recommendations:
+        recommendations.append("🎉 Excellent profile. Keep learning!")
+
+    for rec in recommendations:
+        st.write(rec)
+
+    # ==========================================================
+    # THANK YOU CARD
+    # ==========================================================
+
+    st.markdown(
+        """
+        <div style="
+        margin-top:30px;
+        padding:25px;
+        border-radius:20px;
+        background:linear-gradient(135deg,#2563EB,#4F46E5);
+        color:white;
+        text-align:center;
+        box-shadow:0px 10px 30px rgba(0,0,0,.2);
+        ">
+        <h2>🎉 Prediction Completed</h2>
+        <p>Thank you for using the AI Salary Prediction Dashboard.</p>
+        <p><b>Built by Vaishnavi Goyal</b></p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
