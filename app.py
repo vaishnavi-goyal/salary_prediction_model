@@ -189,6 +189,41 @@ color:#111827 !important;
 border:2px solid #D1D5DB !important;
 
 }
+/* Metric Values */
+
+div[data-testid="stMetricValue"]{
+
+    color:#111827 !important;
+
+    font-weight:700 !important;
+
+}
+
+/* Metric Labels */
+
+div[data-testid="stMetricLabel"]{
+
+    color:#111827 !important;
+
+    font-weight:600 !important;
+
+}
+
+/* Markdown Headings */
+
+h1,h2,h3,h4,h5,h6{
+
+    color:#111827 !important;
+
+}
+
+/* Normal Text */
+
+p,span{
+
+    color:#111827 !important;
+
+}
 
 </style>
 """, unsafe_allow_html=True)
