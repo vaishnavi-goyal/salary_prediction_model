@@ -221,6 +221,41 @@ p{
     color:#111827;
 
 }
+/* ===========================
+   DOWNLOAD BUTTON
+=========================== */
+
+.stDownloadButton > button{
+
+    width:100%;
+
+    height:55px;
+
+    background:linear-gradient(135deg,#2563EB,#4F46E5) !important;
+
+    color:white !important;
+
+    border:none !important;
+
+    border-radius:15px !important;
+
+    font-size:17px !important;
+
+    font-weight:600 !important;
+
+    box-shadow:0 8px 20px rgba(37,99,235,.25);
+
+    transition:0.3s;
+
+}
+
+.stDownloadButton > button:hover{
+
+    background:linear-gradient(135deg,#1D4ED8,#3730A3) !important;
+
+    transform:translateY(-2px);
+
+}
 
 </style>
 """, unsafe_allow_html=True)
