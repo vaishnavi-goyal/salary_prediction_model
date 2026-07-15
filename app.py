@@ -227,6 +227,50 @@ p{
 st.write("")
 
 # ==========================================================
+# HERO SECTION
+# ==========================================================
+
+st.markdown("""
+<div style="
+background:linear-gradient(135deg,#2563EB,#4F46E5);
+padding:40px;
+border-radius:20px;
+text-align:center;
+color:white;
+box-shadow:0 10px 30px rgba(0,0,0,.20);
+margin-bottom:30px;
+">
+
+<h1 style="
+font-size:46px;
+color:white;
+margin-bottom:10px;
+">
+💼 AI Salary Prediction Dashboard
+</h1>
+
+<p style="
+font-size:20px;
+color:#E0E7FF;
+margin-bottom:15px;
+">
+Predict Employee Salary using Machine Learning & Artificial Intelligence
+</p>
+
+<p style="
+font-size:16px;
+color:#F8FAFC;
+">
+🤖 AI Powered &nbsp;&nbsp; | &nbsp;&nbsp;
+📊 ML Model &nbsp;&nbsp; | &nbsp;&nbsp;
+⚡ Instant Prediction &nbsp;&nbsp; | &nbsp;&nbsp;
+🌍 Global Salary Insights
+</p>
+
+</div>
+""", unsafe_allow_html=True)
+
+# ==========================================================
 # INPUT SECTION
 # ==========================================================
 
