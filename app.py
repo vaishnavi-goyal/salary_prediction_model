@@ -53,7 +53,7 @@ font-family:'Poppins',sans-serif;
 /* Background */
 
 .stApp{
-background:linear-gradient(135deg,#eef5ff,#f8fbff,#e6f0ff);
+    background:#F3F6FB;
 }
 
 /* Hide Streamlit */
@@ -74,16 +74,17 @@ visibility:hidden;
 
 .card{
 
-background:white;
+background:#FFFFFF;
 
 padding:30px;
 
 border-radius:20px;
 
-box-shadow:0px 15px 40px rgba(0,0,0,.10);
+border:1px solid #E5E7EB;
+
+box-shadow:0 10px 30px rgba(0,0,0,.08);
 
 }
-
 /* Title */
 
 .title{
@@ -92,7 +93,7 @@ font-size:48px;
 
 font-weight:700;
 
-color:#1d4ed8;
+color:#1E3A8A;
 
 text-align:center;
 
@@ -106,7 +107,7 @@ text-align:center;
 
 font-size:18px;
 
-color:#64748b;
+color:#475569;
 
 margin-bottom:30px;
 
@@ -150,7 +151,26 @@ font-size:16px;
 
 font-weight:600;
 
-color:#1f2937;
+color:#111827 !important;
+
+}
+            div[data-baseweb="select"] > div{
+
+background:white !important;
+
+color:#111827 !important;
+
+border:2px solid #D1D5DB !important;
+
+}
+
+.stNumberInput input{
+
+background:white !important;
+
+color:#111827 !important;
+
+border:2px solid #D1D5DB !important;
 
 }
 
