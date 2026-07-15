@@ -70,7 +70,7 @@ Salary_Prediction_Model/
 
 ## 💻 GitHub Repository
 
-🔗 https://github.com/vaishnavi-goyal/Salary_Prediction_model
+🔗 https://github.com/vaishnavi-goyal/salary_prediction_model
 
 ---
 
