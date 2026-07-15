@@ -154,7 +154,23 @@ font-weight:600;
 color:#111827 !important;
 
 }
-            div[data-baseweb="select"] > div{
+
+/* Fix Label Color */
+
+label,
+label p,
+label span,
+div[data-testid="stWidgetLabel"],
+div[data-testid="stWidgetLabel"] p,
+div[data-testid="stWidgetLabel"] span{
+
+    color:#111827 !important;
+    opacity:1 !important;
+    font-weight:600 !important;
+
+}
+                        
+div[data-baseweb="select"] > div{
 
 background:white !important;
 
