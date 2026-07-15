@@ -46,116 +46,77 @@ st.markdown("""
 
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
-html,body,[class*="css"]{
-font-family:'Poppins',sans-serif;
-}
+/* ===========================
+   GLOBAL
+=========================== */
 
-/* Background */
+html, body, [class*="css"]{
+    font-family:'Poppins',sans-serif;
+}
 
 .stApp{
     background:#F3F6FB;
 }
 
-/* Hide Streamlit */
-
-#MainMenu{
-visibility:hidden;
-}
-
-footer{
-visibility:hidden;
-}
-
+#MainMenu,
+footer,
 header{
-visibility:hidden;
+    visibility:hidden;
 }
 
-/* Card */
+/* ===========================
+   CARD
+=========================== */
 
 .card{
-
-background:#FFFFFF;
-
-padding:30px;
-
-border-radius:20px;
-
-border:1px solid #E5E7EB;
-
-box-shadow:0 10px 30px rgba(0,0,0,.08);
-
+    background:#FFFFFF;
+    padding:30px;
+    border-radius:20px;
+    border:1px solid #E5E7EB;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
 }
-/* Title */
+
+/* ===========================
+   TITLE
+=========================== */
 
 .title{
-
-font-size:48px;
-
-font-weight:700;
-
-color:#1E3A8A;
-
-text-align:center;
-
+    font-size:48px;
+    font-weight:700;
+    color:#1E3A8A !important;
+    text-align:center;
 }
-
-/* Subtitle */
 
 .subtitle{
-
-text-align:center;
-
-font-size:18px;
-
-color:#475569;
-
-margin-bottom:30px;
-
+    text-align:center;
+    font-size:18px;
+    color:#475569 !important;
+    margin-bottom:30px;
 }
 
-/* Button */
+/* ===========================
+   BUTTON
+=========================== */
 
 .stButton>button{
-
-width:100%;
-
-height:60px;
-
-border:none;
-
-border-radius:15px;
-
-background:linear-gradient(90deg,#2563EB,#4F46E5);
-
-color:white;
-
-font-size:20px;
-
-font-weight:bold;
-
+    width:100%;
+    height:60px;
+    border:none;
+    border-radius:15px;
+    background:linear-gradient(90deg,#2563EB,#4F46E5);
+    color:white;
+    font-size:20px;
+    font-weight:bold;
 }
 
 .stButton>button:hover{
-
-transform:translateY(-3px);
-
-transition:.3s;
-
+    transform:translateY(-3px);
+    transition:.3s;
 }
 
-/* Labels */
-
-div[data-testid="stWidgetLabel"] p{
-
-font-size:16px;
-
-font-weight:600;
-
-color:#111827 !important;
-
-}
-
-/* Fix Label Color */
+/* ===========================
+   LABELS
+=========================== */
 
 label,
 label p,
@@ -166,50 +127,84 @@ div[data-testid="stWidgetLabel"] span{
 
     color:#111827 !important;
     opacity:1 !important;
+    font-size:16px !important;
     font-weight:600 !important;
 
 }
-                        
+
+/* ===========================
+   SELECTBOX
+=========================== */
+
 div[data-baseweb="select"] > div{
 
-background:white !important;
-
-color:#111827 !important;
-
-border:2px solid #D1D5DB !important;
+    background:#FFFFFF !important;
+    color:#111827 !important;
+    border:2px solid #D1D5DB !important;
+    border-radius:12px;
 
 }
+
+/* ===========================
+   NUMBER INPUT
+=========================== */
 
 .stNumberInput input{
 
-background:white !important;
-
-color:#111827 !important;
-
-border:2px solid #D1D5DB !important;
+    background:#FFFFFF !important;
+    color:#111827 !important;
+    border:2px solid #D1D5DB !important;
+    border-radius:12px;
 
 }
-/* Metric Values */
 
-div[data-testid="stMetricValue"]{
+/* ===========================
+   SLIDER LABEL
+=========================== */
+
+.stSlider label{
 
     color:#111827 !important;
+
+}
+
+/* ===========================
+   METRIC
+=========================== */
+
+[data-testid="stMetric"]{
+
+    background:white;
+
+    border-radius:15px;
+
+    padding:18px;
+
+    border:1px solid #E5E7EB;
+
+}
+
+[data-testid="stMetricLabel"]{
+
+    color:#111827 !important;
+
+    font-weight:600 !important;
+
+}
+
+[data-testid="stMetricValue"]{
+
+    color:#111827 !important;
+
+    font-size:34px !important;
 
     font-weight:700 !important;
 
 }
 
-/* Metric Labels */
-
-div[data-testid="stMetricLabel"]{
-
-    color:#111827 !important;
-
-    font-weight:600 !important;
-
-}
-
-/* Markdown Headings */
+/* ===========================
+   HEADINGS
+=========================== */
 
 h1,h2,h3,h4,h5,h6{
 
@@ -217,60 +212,18 @@ h1,h2,h3,h4,h5,h6{
 
 }
 
-/* Normal Text */
+/* ===========================
+   PARAGRAPH
+=========================== */
 
-p,span{
+p{
 
-    color:#111827 !important;
+    color:#111827;
 
 }
 
 </style>
 """, unsafe_allow_html=True)
-
-# ==========================================================
-# SIDEBAR
-# ==========================================================
-
-with st.sidebar:
-
-    st.title("🤖 AI Salary Predictor")
-
-    st.write("Professional Machine Learning Dashboard")
-
-    st.markdown("---")
-
-    dark = st.toggle("🌙 Dark Mode")
-
-    st.markdown("---")
-
-    st.success("Model Loaded Successfully ✅")
-
-    st.caption("Version 2.0")
-    # ==========================================================
-# HERO SECTION
-# ==========================================================
-
-st.markdown("""
-
-<div class="card">
-
-<div class="title">
-
-💼 AI Salary Prediction Dashboard
-
-</div>
-
-<div class="subtitle">
-
-Predict employee salary using Machine Learning and AI Analytics
-
-</div>
-
-</div>
-
-""", unsafe_allow_html=True)
-
 st.write("")
 
 # ==========================================================
