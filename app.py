@@ -426,40 +426,30 @@ if predict:
     # ==========================================================
 
     st.markdown(f"""
+<div style="
+background:linear-gradient(135deg,#2563EB,#4F46E5);
+border-radius:25px;
+padding:35px;
+color:white;
+text-align:center;
+box-shadow:0 15px 40px rgba(0,0,0,.20);
+margin-top:20px;
+">
 
-    <div style="
+<h2>💰 Predicted Salary</h2>
 
-    background:linear-gradient(135deg,#2563EB,#4F46E5);
+<h1 style="font-size:55px;">
+${salary:,.0f}
+</h1>
 
-    border-radius:25px;
+<h3>{code} {converted_salary:,.0f}</h3>
 
-    padding:35px;
+<h3>{rating}</h3>
 
-    color:white;
+<p>{level}</p>
 
-    text-align:center;
-
-    box-shadow:0 15px 40px rgba(0,0,0,.20);
-
-    ">
-
-    <h2>💰 Predicted Salary</h2>
-
-    <h1 style="font-size:55px;">
-
-    ${salary:,.0f}
-
-    </h1>
-
-    <h3>{code} {converted_salary:,.0f}</h3>
-
-    <h3>{rating}</h3>
-
-    <p>{level}</p>
-
-    </div>
-
-    """, unsafe_allow_html=True)
+</div>
+""", unsafe_allow_html=True)
 
     st.write("")
         # ==========================================================
