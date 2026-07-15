@@ -232,7 +232,7 @@ st.write("")
 
 st.markdown("""
 <div style="
-background:linear-gradient(135deg,#2563EB,#4F46E5);
+background:linear-gradient(135deg,#1E3A8A,#3B82F6);
 padding:40px;
 border-radius:20px;
 text-align:center;
