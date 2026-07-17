@@ -3,7 +3,6 @@
   Job Salary Prediction - Machine Learning Model
 ====================================================
 """
-
 # AUTO-INSTALL MISSING PACKAGES
 import subprocess
 import sys
@@ -459,52 +458,52 @@ def show_prediction(model, X_input, inputs_display):
 
     predicted_salary = model.predict(X_input)[0]
 
-    # CURRENCY CONVERSION
-    currency_rates = {
-        "USA": ("USD", 1),
-        "India": ("INR", 83),
-        "UK": ("GBP", 0.79),
-        "Canada": ("CAD", 1.36),
-        "Germany": ("EUR", 0.92),
-        "Australia": ("AUD", 1.52),
-        "Singapore": ("SGD", 1.35),
-        "UAE": ("AED", 3.67)
-    }
+    # =====================================================
+# CURRENCY CONVERSION
+# =====================================================
 
-    selected_country = inputs_display["Location"]
+currency = {
+    "USA": ("$", 1),
+    "India": ("₹", 83),
+    "UK": ("£", 0.79),
+    "Canada": ("C$", 1.36),
+    "Germany": ("€", 0.92),
+    "Australia": ("A$", 1.52),
+    "Singapore": ("S$", 1.35),
+    "UAE": ("AED", 3.67)
+}
 
-    currency_code = "USD"
-    conversion_rate = 1
+selected_country = inputs_display["Location"]
 
-    if selected_country in currency_rates:
-        currency_code, conversion_rate = currency_rates[selected_country]
+symbol = "$"
+rate = 1
 
-    converted_salary = predicted_salary * conversion_rate
+if selected_country in currency:
+    symbol, rate = currency[selected_country]
 
-    lower = max(0, predicted_salary - 4255)
-    upper = predicted_salary + 4255
+converted_salary = predicted_salary * rate
 
-    section("PREDICTION RESULT")
+lower = max(0, predicted_salary - 4255)
+upper = predicted_salary + 4255
 
-    print("\n  Your Profile:")
+section("PREDICTION RESULT")
 
-    separator("-", 45)
+print("\n  Your Profile:")
 
-    for k, v in inputs_display.items():
-        print(f"  {k:<22} : {v}")
+separator("-", 45)
 
-    separator("-", 45)
+for k, v in inputs_display.items():
+    print(f"  {k:<22} : {v}")
 
-    print(f"\n  Predicted Salary (USD) : ${predicted_salary:>12,.0f}")
+separator("-", 45)
 
-    print(f"  Converted Salary ({currency_code}) : {currency_code} {converted_salary:>12,.0f}")
+print(f"\n  Predicted Salary : {symbol} {converted_salary:,.0f}")
 
-    print(f"\n  Confidence Range : ${lower:>12,.0f} to ${upper:>12,.0f}")
+print(f"\n  Confidence Range : {symbol} {lower * rate:,.0f} to {symbol} {upper * rate:,.0f}")
 
-    separator("-", 45)
+separator("-", 45)
 
-    print()
-
+print()
 # PREDICTION LOOP
 def prediction_loop(model, encoders):
 
