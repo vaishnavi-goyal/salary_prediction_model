@@ -464,14 +464,13 @@ if predict:
         "UAE":("AED",3.67)
     }
 
-    code = "USD"
+    symbol = "$"
     rate = 1
 
     if location in currency:
-        code, rate = currency[location]
+        symbol, rate = currency[location]
 
     converted_salary = salary * rate
-
     # ==========================================================
     # SALARY RATING
     # ==========================================================
@@ -521,7 +520,7 @@ if predict:
     color:white;
     margin:15px 0;
     ">
-    {symbol} {converted_salary:,.0f}
+    {code} {converted_salary:,.0f}
     </h1>
 
     <h3 style="color:#FDE68A;">
