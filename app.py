@@ -464,11 +464,11 @@ if predict:
         "UAE":("AED",3.67)
     }
 
-    symbol = "$"
+    code = "$"
     rate = 1
 
     if location in currency:
-        symbol, rate = currency[location]
+        code, rate = currency[location]
 
     converted_salary = salary * rate
     # ==========================================================
