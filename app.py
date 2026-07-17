@@ -503,37 +503,45 @@ if predict:
     # ==========================================================
     # SALARY CARD
     # ==========================================================
-
     st.markdown(f"""
-<div style="
-background:linear-gradient(135deg,#2563EB,#4F46E5);
-border-radius:25px;
-padding:35px;
-color:white;
-text-align:center;
-box-shadow:0 15px 40px rgba(0,0,0,.20);
-margin-top:20px;
-">
+    <div style="
+    background:linear-gradient(135deg,#2563EB,#4F46E5);
+    border-radius:25px;
+    padding:35px;
+    color:white;
+    text-align:center;
+    box-shadow:0 15px 40px rgba(0,0,0,.20);
+    margin-top:20px;
+    ">
 
-<h2>💰 Predicted Salary</h2>
+    <h2 style="color:white;">💰 Predicted Salary</h2>
 
-<h1 style="font-size:55px;">
-${salary:,.0f}
-</h1>
+    <h1 style="
+    font-size:55px;
+    color:white;
+    margin:15px 0;
+    ">
+    {symbol} {converted_salary:,.0f}
+    </h1>
 
-<h3>{code} {converted_salary:,.0f}</h3>
+    <h3 style="color:#FDE68A;">
+    {rating}
+    </h3>
 
-<h3>{rating}</h3>
+    <p style="font-size:18px;color:#E0E7FF;">
+    {level}
+    </p>
 
-<p>{level}</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-</div>
-""", unsafe_allow_html=True)
+st.write("")
 
-    st.write("")
+    
         # ==========================================================
     # PROFILE SUMMARY
     # ==========================================================
+if predict:
 
     left_card, right_card = st.columns(2)
 
@@ -553,8 +561,6 @@ ${salary:,.0f}
 **📍 Location:** {location}
 
 **🏠 Remote Work:** {remote_work}
-
-**📜 Certifications:** {certifications}
 """)
 
     # ==========================================================
