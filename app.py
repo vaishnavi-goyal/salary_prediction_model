@@ -259,8 +259,7 @@ p{
 
 </style>
 """, unsafe_allow_html=True)
-st.write("")
-
+st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
 # ==========================================================
 # HERO SECTION
 # ==========================================================
@@ -366,8 +365,7 @@ with right:
         value=1
     )
 
-st.write("")
-
+st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
 # ==========================================================
 # QUICK PREVIEW
 # ==========================================================
@@ -399,7 +397,7 @@ st.info(
 """
 )
 
-st.write("")
+st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
 
 # ==========================================================
 # PREDICT BUTTON
@@ -534,8 +532,7 @@ if predict:
     </div>
     """, unsafe_allow_html=True)
 
-st.write("")
-
+st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
     
         # ==========================================================
     # PROFILE SUMMARY
@@ -599,8 +596,7 @@ if predict:
     # ==========================================================
     # CONFIDENCE BAR
     # ==========================================================
-
-    st.write("")
+    st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
 
     st.markdown("### 📈 Prediction Confidence")
 
@@ -638,7 +634,7 @@ if predict:
             certifications
         )
 
-    st.write("")
+    st.markdown("<div style='margin-bottom:10px;'></div>", unsafe_allow_html=True)
         # ==========================================================
     # ANALYTICS DASHBOARD
     # ==========================================================
@@ -909,45 +905,8 @@ Recommended Skills
 
     st.success("✅ Salary Prediction Completed Successfully")
 
-    # ==========================================================
-    # FOOTER
-    # ==========================================================
+   
 
-    st.markdown("---")
-
-    st.markdown("""
-
-<div style="
-
-text-align:center;
-
-padding:25px;
-
-">
-
-<h2 style="color:#2563EB;">
-
-💼 AI Salary Prediction Dashboard
-
-</h2>
-
-<p>
-
-Built with ❤️ using
-
-<b>Python • Streamlit • Scikit-learn • Plotly</b>
-
-</p>
-
-<p>
-
-Developed by <b>Vaishnavi Goyal</b>
-
-</p>
-
-</div>
-
-""", unsafe_allow_html=True)
         # ==========================================================
     # AI SALARY INSIGHTS
     # ==========================================================
@@ -1046,7 +1005,7 @@ To move towards senior positions:
     else:
 
         st.success("AI Architect")
-            # ==========================================================
+    # ==========================================================
     # PDF REPORT
     # ==========================================================
 
@@ -1118,7 +1077,7 @@ To move towards senior positions:
             mime="application/pdf"
 
         )
-            # ==========================================================
+    # ==========================================================
     # COUNTRY FLAG
     # ==========================================================
 
